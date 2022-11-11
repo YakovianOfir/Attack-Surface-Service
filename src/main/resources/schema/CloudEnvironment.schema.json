@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "type": "object",
+  "required": [
+    "vms",
+    "fw_rules"
+  ],
+  "properties": {
+    "vms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "vm_id",
+          "name",
+          "tags"
+        ],
+        "properties": {
+          "vm_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "fw_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "fw_id",
+          "source_tag",
+          "dest_tag"
+        ],
+        "properties": {
+          "fw_id": {
+            "type": "string"
+          },
+          "source_tag": {
+            "type": "string"
+          },
+          "dest_tag": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
