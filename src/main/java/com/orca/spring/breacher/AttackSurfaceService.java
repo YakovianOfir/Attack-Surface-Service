@@ -11,6 +11,7 @@ public class AttackSurfaceService implements CommandLineRunner
 {
 	@Autowired
 	private AttackSurfaceServiceController serviceController;
+	private AttackSurfaceServiceSettings attackSurfaceServiceSettings;
 
 	public static void main(String[] args)
 	{
