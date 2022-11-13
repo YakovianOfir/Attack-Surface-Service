@@ -53,6 +53,6 @@ public class AttackSurfaceServiceSettings
         var cloudEnvironmentSettingsFilePath = commandLineArguments[AttackSurfaceServiceArguments.InputFilePath.value];
         var cloudEnvironmentSettingsFile = new File(cloudEnvironmentSettingsFilePath);
 
-        cloudEnvironment = jacksonObjectMapper.readValue(cloudEnvironmentSettingsFile, CloudEnvironment.class);
+        this.cloudEnvironment = jacksonObjectMapper.readValue(cloudEnvironmentSettingsFile, CloudEnvironment.class);
     }
 }
