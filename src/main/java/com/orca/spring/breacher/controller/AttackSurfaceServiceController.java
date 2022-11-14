@@ -1,9 +1,8 @@
 package com.orca.spring.breacher.controller;
 
-import com.orca.spring.breacher.definitions.CloudAssetIdentifier;
-import com.orca.spring.breacher.statistics.AttackSurfaceServiceStatistics;
+import com.orca.spring.breacher.exception.InternalRestEndpointException;
+import com.orca.spring.breacher.exception.VirtualMachineNotFoundException;
 import com.orca.spring.breacher.statistics.ServiceRuntimeStatistics;
-import com.orca.spring.breacher.topology.CloudAssetsTopology;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,37 +11,49 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.orca.spring.breacher.definitions.AttackSurfaceServiceConstants.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value = RestServiceApiPath, method = RequestMethod.GET)
+@RequestMapping(value = RestControllerServiceApiPath, method = RequestMethod.GET)
 public class AttackSurfaceServiceController
 {
     // region Dependencies
 
     @Autowired
-    private CloudAssetsTopology assetsTopology;
-
-    @Autowired
-    private AttackSurfaceServiceStatistics serviceStatistics;
+    private AttackSurfaceServiceCoreEngine engine;
 
     // endregion
 
-    @RequestMapping(RestEndpointAttack)
-    public List<String> analyzeMachineAttackSurface(@RequestParam(name = RestEndpointAttackQueryParamVmId) String machineIdentifier)
+    @RequestMapping(RestControllerEndpointMappingAttack)
+    public List<String> analyzeMachineAttackSurface(@RequestParam(name = RestControllerEndpointAttackQueryParam) String machineIdentifier) throws VirtualMachineNotFoundException, InternalRestEndpointException
     {
-        var assetIdentifier = new CloudAssetIdentifier(machineIdentifier);
-        var attackSurfaceVms = assetsTopology.analyzeAttackSurface(assetIdentifier);
+        try
+        {
+            return engine.analyzeMachineAttackSurface(machineIdentifier);
+        }
+        catch (Exception e)
+        {
+            if (e instanceof VirtualMachineNotFoundException)
+            {
+                throw e;
+            }
 
-        return attackSurfaceVms.stream().map(vm -> vm.getIdentifier().id()).collect(Collectors.toList());
+            throw new InternalRestEndpointException(String.format("REST endpoint (%s) exception.", RestControllerEndpointMappingAttack), e);
+        }
     }
 
-    @RequestMapping(RestEndpointStats)
-    public ServiceRuntimeStatistics fetchServiceRuntimeStatistics()
+    @RequestMapping(RestControllerEndpointMappingStats)
+    public ServiceRuntimeStatistics fetchServiceRuntimeStatistics() throws InternalRestEndpointException
     {
-        return serviceStatistics.fetch();
+        try
+        {
+            return engine.fetchServiceRuntimeStatistics();
+        }
+        catch (Exception e)
+        {
+            throw new InternalRestEndpointException(String.format("REST endpoint (%s) exception.", RestControllerEndpointMappingStats), e);
+        }
     }
 }

@@ -1,27 +1,15 @@
 package com.orca.spring.breacher;
 
-import com.orca.spring.breacher.settings.AttackSurfaceServiceSettings;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
 @SpringBootApplication
-public class AttackSurfaceService implements CommandLineRunner
+public class AttackSurfaceService
 {
-	@Autowired
-	private AttackSurfaceServiceSettings attackSurfaceServiceSettings;
-
 	public static void main(String[] args)
 	{
 		SpringApplication.run(AttackSurfaceService.class, args);
-	}
-
-	@Override
-	public void run(String... args) throws Exception
-	{
-		log.info(attackSurfaceServiceSettings.getCloudEnvironment().toString());
 	}
 }
