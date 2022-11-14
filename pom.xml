@@ -10,16 +10,21 @@
 		<relativePath/>
 	</parent>
 
-	<description>Attack Surface Service</description>
+	<name>Breacher</name>
+	<version>1.0.0-RC</version>
 	<groupId>com.orca.spring</groupId>
 	<artifactId>breacher</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Breacher</name>
+	<description>Attack-Surface-Service</description>
+	<organization>
+		<name>Orca Security Inc. ©2022</name>
+	</organization>
 
 	<properties>
 		<java.version>17</java.version>
+		<guava.version>31.1-jre</guava.version>
 		<lombok.version>1.18.24</lombok.version>
 		<build-helper.version>3.0.0</build-helper.version>
+		<git-commit-id.version>5.0.0</git-commit-id.version>
 		<jsonschema2pojo.version>1.1.2</jsonschema2pojo.version>
 		<maven-compiler-target.version>17</maven-compiler-target.version>
 		<maven-compiler-source.version>17</maven-compiler-source.version>
@@ -44,6 +49,11 @@
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -51,6 +61,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -99,6 +116,11 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>io.github.git-commit-id</groupId>
+				<artifactId>git-commit-id-maven-plugin</artifactId>
+				<version>${git-commit-id.version}</version>
 			</plugin>
 		</plugins>
 	</build>
