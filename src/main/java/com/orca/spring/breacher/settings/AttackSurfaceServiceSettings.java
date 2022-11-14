@@ -1,58 +1,98 @@
 package com.orca.spring.breacher.settings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orca.spring.breacher.definitions.AttackSurfaceServiceConstants;
+import com.orca.spring.breacher.environment.CloudEnvironmentProviderFactory;
+import com.orca.spring.breacher.environment.CloudEnvironmentProviderType;
+import com.orca.spring.breacher.environment.ICloudEnvironmentProvider;
 import com.orca.spring.breacher.model.CloudEnvironment;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 
+@Slf4j
 @Component
 public class AttackSurfaceServiceSettings
 {
-    @AllArgsConstructor
-    private enum AttackSurfaceServiceArguments
-    {
-        InputFilePath(0),
-        ValidArgumentsCount(1);
-
-        public Integer value;
-    }
-
     // region Fields
 
-    @Getter
-    private CloudEnvironment cloudEnvironment;
+    private ICloudEnvironmentProvider environmentProvider;
+
+    // endregion
+
+    // region Constants
+
+    private static final Integer ServiceCliMaximumArgumentsCount = 1;
+    private static final Integer ServiceCliArgumentInputFilePathIndex = 0;
 
     // endregion
 
     @Autowired
     public AttackSurfaceServiceSettings(ApplicationArguments applicationArguments, ObjectMapper jacksonObjectMapper) throws IOException
     {
-        validateCommandLineArguments(applicationArguments);
-        loadCloudEnvironmentSettings(applicationArguments, jacksonObjectMapper);
+        var providerType = DiagnoseCloudEnvironmentProviderType(applicationArguments);
+        log.info("[Service-Settings] Detected cloud environment provider type. ({})", providerType);
+
+        var providerArgument = DiagnoseCloudEnvironmentProviderArgument(applicationArguments, providerType);
+        log.info("[Service-Settings] Detected cloud environment provider argument. ({})", providerArgument);
+
+        this.environmentProvider = CloudEnvironmentProviderFactory.create(providerType, providerArgument, jacksonObjectMapper);
+        log.info("[Service-Settings] Loaded settings. (OK) ({})", environmentProvider);
     }
 
-    private void validateCommandLineArguments(ApplicationArguments applicationArguments)
+    public CloudEnvironment getCloudEnvironment()
     {
-        var commandLineArguments = applicationArguments.getSourceArgs();
+        return environmentProvider.get();
+    }
 
-        if (commandLineArguments.length != AttackSurfaceServiceArguments.ValidArgumentsCount.value)
+    private CloudEnvironmentProviderType DiagnoseCloudEnvironmentProviderType(ApplicationArguments applicationArguments)
+    {
+        if (applicationArguments == null)
+        {
+            return CloudEnvironmentProviderType.SystemPropertyProvider;
+        }
+
+        var sourceArguments = applicationArguments.getSourceArgs();
+
+        if (sourceArguments.length > ServiceCliMaximumArgumentsCount)
         {
             throw new IllegalArgumentException();
         }
+
+        if (sourceArguments.length == ServiceCliMaximumArgumentsCount)
+        {
+            return CloudEnvironmentProviderType.FileSystemProvider;
+        }
+
+        if (sourceArguments.length == 0)
+        {
+            return CloudEnvironmentProviderType.SystemPropertyProvider;
+        }
+
+        throw new IllegalArgumentException();
     }
 
-    public void loadCloudEnvironmentSettings(ApplicationArguments applicationArguments, ObjectMapper jacksonObjectMapper) throws IOException
+    private String DiagnoseCloudEnvironmentProviderArgument(ApplicationArguments applicationArguments, CloudEnvironmentProviderType providerType)
     {
-        var commandLineArguments = applicationArguments.getSourceArgs();
-        var cloudEnvironmentSettingsFilePath = commandLineArguments[AttackSurfaceServiceArguments.InputFilePath.value];
-        var cloudEnvironmentSettingsFile = new File(cloudEnvironmentSettingsFilePath);
+        switch (providerType)
+        {
+            case FileSystemProvider ->
+            {
+                return applicationArguments.getSourceArgs()[ServiceCliArgumentInputFilePathIndex];
+            }
 
-        this.cloudEnvironment = jacksonObjectMapper.readValue(cloudEnvironmentSettingsFile, CloudEnvironment.class);
+            case SystemPropertyProvider ->
+            {
+                return AttackSurfaceServiceConstants.ServiceCloudEnvironmentSystemPropertyName;
+            }
+
+            default ->
+            {
+                throw new IllegalArgumentException();
+            }
+        }
     }
 }

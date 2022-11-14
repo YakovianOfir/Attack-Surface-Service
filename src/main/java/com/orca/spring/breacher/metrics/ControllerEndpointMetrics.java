@@ -17,6 +17,12 @@ public final class ControllerEndpointMetrics
 
     // endregion
 
+    // region Statics
+
+    public static ControllerEndpointMetrics empty = new ControllerEndpointMetrics(0D, 0D);
+
+    // endregion
+
     public ControllerEndpointMetrics(Double totalRequestsCount, Double totalProcessingTime)
     {
         this.totalRequestsCount = totalRequestsCount;
