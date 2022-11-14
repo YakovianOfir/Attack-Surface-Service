@@ -39,11 +39,16 @@ public class AttackSurfaceServiceMetrics
             .getValue();
     }
 
+    private MetricsEndpoint.MetricDescriptor readMetric(String metricName, List<String> metricTags)
+    {
+        return metricsEndpoint.metric(metricName, metricTags);
+    }
+
     private List<MetricsEndpoint.Sample> getEndpointMeasurements(String endpointName)
     {
         var actuatorMetricName = ActuatorEndpointMeasurementsMetricName;
-        var actuatorMetricTag = String.format("%s%s%s", ActuatorEndpointMeasurementsMetricTag, RestServiceApiPath, endpointName);
-        var actuatorMetric = metricsEndpoint.metric(actuatorMetricName, Arrays.asList(actuatorMetricTag));
+        var actuatorMetricTag = String.format("%s%s%s", ActuatorEndpointMeasurementsMetricTag, RestControllerServiceApiPath, endpointName);
+        var actuatorMetric = readMetric(actuatorMetricName, Arrays.asList(actuatorMetricTag));
 
         return actuatorMetric.getMeasurements();
     }

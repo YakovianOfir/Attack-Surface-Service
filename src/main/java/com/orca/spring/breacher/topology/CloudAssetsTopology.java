@@ -1,12 +1,13 @@
 package com.orca.spring.breacher.topology;
 
 import com.orca.spring.breacher.definitions.CloudAssetIdentifier;
-import com.orca.spring.breacher.definitions.VirtualMachine;
+import com.orca.spring.breacher.exception.VirtualMachineNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -19,8 +20,11 @@ public class CloudAssetsTopology
 
     // endregion
 
-    public Set<VirtualMachine> analyzeAttackSurface(CloudAssetIdentifier targetAsset)
+    public List<String> analyzeAttackSurface(CloudAssetIdentifier targetAsset) throws VirtualMachineNotFoundException
     {
-        return machineAccessTable.getAttackSurfaceForCloudAsset(targetAsset);
+        return
+            machineAccessTable.getAttackSurfaceForCloudAsset(targetAsset).stream()
+            .map(vm -> vm.getIdentifier().id())
+            .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,7 @@
 package com.orca.spring.breacher.topology;
 
 import com.orca.spring.breacher.definitions.CloudAssetTag;
+import com.orca.spring.breacher.definitions.FirewallRule;
 import com.orca.spring.breacher.definitions.VirtualMachine;
 import com.orca.spring.breacher.model.FwRule;
 import com.orca.spring.breacher.settings.AttackSurfaceServiceSettings;
@@ -24,7 +25,10 @@ public class FirewallAccessTable
     @Autowired
     public FirewallAccessTable(AttackSurfaceServiceSettings settings)
     {
-        var firewallRules = settings.getCloudEnvironment().getFwRules();
+        var firewallRulesDefinitions = settings.getCloudEnvironment().getFwRules();
+
+        log.info("Constructing formal FW rules... [({}) Rule Definitions]", firewallRulesDefinitions.size());
+        var firewallRules = constructFirewallRules(firewallRulesDefinitions);
 
         log.info("Resolving all traffic destination tags... [({}) FW Rules]", firewallRules.size());
         var targetTags = resolveAllTrafficDestinationTags(firewallRules);
@@ -35,16 +39,24 @@ public class FirewallAccessTable
         log.debug("Firewall Access Table is present. (OK) [({})]", firewallAccessMap);
     }
 
-    private static Set<CloudAssetTag> resolveAllTrafficDestinationTags(List<FwRule> fwRules)
+    public Set<CloudAssetTag> resolveAllowedTrafficSourcesForVirtualMachine(VirtualMachine vm)
     {
         return
-            fwRules.stream()
-            .map(fwRule -> fwRule.getDestTag())
-            .map(targetTag -> new CloudAssetTag(targetTag))
+            vm.getTags().stream()
+            .map(tag -> getAllowedTrafficSourcesForDestinationTag(tag))
+            .flatMap(Collection::stream)
             .collect(Collectors.toSet());
     }
 
-    private void constructFirewallAccessTable(List<FwRule> firewallRules, Set<CloudAssetTag> targetTags)
+    private static List<FirewallRule> constructFirewallRules(List<FwRule> firewallRulesDefinitions)
+    {
+        return
+            firewallRulesDefinitions.stream()
+            .map(rule -> new FirewallRule(rule))
+            .collect(Collectors.toList());
+    }
+
+    private void constructFirewallAccessTable(List<FirewallRule> firewallRules, Set<CloudAssetTag> targetTags)
     {
         for (var targetTag : targetTags)
         {
@@ -57,7 +69,7 @@ public class FirewallAccessTable
                 continue;
             }
 
-            log.info("\t Constructing Firewall Access Table entry... [({})]", targetTag.tag());
+            log.info("\t Constructing Firewall Access Table entry... [({} -> {})]", allowedSourceTags, targetTag.tag());
             constructFirewallAccessTableEntry(targetTag, allowedSourceTags);
         }
     }
@@ -72,30 +84,28 @@ public class FirewallAccessTable
         firewallAccessMap.put(targetTag, allowedSourceTags);
     }
 
-    private static Set<CloudAssetTag> resolveTrafficSourceTagsForDestination(List<FwRule> fwRules, CloudAssetTag targetTag)
-    {
-        return
-            fwRules.stream()
-            .filter(fwRule -> targetTag.tag().equals(fwRule.getDestTag()))
-            .map(fwRule -> fwRule.getSourceTag())
-            .map(sourceTag -> new CloudAssetTag(sourceTag))
-            .collect(Collectors.toSet());
-}
-
-    public Set<CloudAssetTag> resolveAllowedTrafficSourcesForVirtualMachine(VirtualMachine vm)
-    {
-        return
-            vm.getTags().stream()
-            .map(tag -> getAllowedTrafficSourcesForDestinationTag(tag))
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
-    }
-
     private Set<CloudAssetTag> getAllowedTrafficSourcesForDestinationTag(CloudAssetTag targetTag)
     {
         return
             firewallAccessMap.containsKey(targetTag) ?
             firewallAccessMap.get(targetTag) :
             Collections.emptySet();
+    }
+
+    private static Set<CloudAssetTag> resolveAllTrafficDestinationTags(List<FirewallRule> fwRules)
+    {
+        return
+            fwRules.stream()
+            .map(fwRule -> fwRule.getTargetTag())
+            .collect(Collectors.toSet());
+    }
+
+    private static Set<CloudAssetTag> resolveTrafficSourceTagsForDestination(List<FirewallRule> fwRules, CloudAssetTag targetTag)
+    {
+        return
+            fwRules.stream()
+            .filter(fwRule -> targetTag.tag().equals(fwRule.getTargetTag().tag()))
+            .map(fwRule -> fwRule.getSourceTag())
+            .collect(Collectors.toSet());
     }
 }
