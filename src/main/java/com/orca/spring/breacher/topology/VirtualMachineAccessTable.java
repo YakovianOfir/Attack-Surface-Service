@@ -3,6 +3,7 @@ package com.orca.spring.breacher.topology;
 import com.orca.spring.breacher.definitions.CloudAssetIdentifier;
 import com.orca.spring.breacher.definitions.CloudAssetTag;
 import com.orca.spring.breacher.definitions.VirtualMachine;
+import com.orca.spring.breacher.exception.VirtualMachineNotFoundException;
 import com.orca.spring.breacher.model.Vm;
 import com.orca.spring.breacher.settings.AttackSurfaceServiceSettings;
 import lombok.extern.slf4j.Slf4j;
@@ -36,13 +37,35 @@ public class VirtualMachineAccessTable
         log.debug("VM Access Table is present. (OK) [({})]", machineAccessMap);
     }
 
+    public Set<VirtualMachine> getAttackSurfaceForCloudAsset(CloudAssetIdentifier assetIdentifier) throws VirtualMachineNotFoundException
+    {
+        validateCloudAssetIdentifier(assetIdentifier);
+
+        return machineAccessMap.get(assetIdentifier);
+    }
+
+    private void validateCloudAssetIdentifier(CloudAssetIdentifier assetIdentifier) throws VirtualMachineNotFoundException
+    {
+        if (!machineAccessMap.containsKey(assetIdentifier))
+        {
+            throw new VirtualMachineNotFoundException(String.format("Cannot found VM asset with ID -> (%s)", assetIdentifier));
+        }
+    }
+
     private static List<VirtualMachine> constructVirtualMachineCloudAssets(List<Vm> virtualMachineDefinitions)
     {
         return
             virtualMachineDefinitions.stream()
-            .filter(vm -> !vm.getTags().isEmpty())
             .map(vm -> new VirtualMachine(vm))
             .collect(Collectors.toList());
+    }
+
+    private static Set<VirtualMachine> resolveVirtualMachinesWithAssetTags(List<VirtualMachine> virtualMachines, Set<CloudAssetTag> assetTags)
+    {
+        return
+            virtualMachines.stream()
+            .filter(vm -> vm.hasTag(assetTags))
+            .collect(Collectors.toSet());
     }
 
     private void constructVirtualMachineAccessTable(FirewallAccessTable firewallAccessTable, List<VirtualMachine> virtualMachines)
@@ -80,21 +103,5 @@ public class VirtualMachineAccessTable
         }
 
         machineAccessMap.put(vm.getIdentifier(), accessibleVirtualMachines);
-    }
-
-    private static Set<VirtualMachine> resolveVirtualMachinesWithAssetTags(List<VirtualMachine> virtualMachines, Set<CloudAssetTag> assetTags)
-    {
-        return
-            virtualMachines.stream()
-            .filter(vm -> vm.hasTag(assetTags))
-            .collect(Collectors.toSet());
-    }
-
-    public Set<VirtualMachine> getAttackSurfaceForCloudAsset(CloudAssetIdentifier assetIdentifier)
-    {
-        return
-            machineAccessMap.containsKey(assetIdentifier) ?
-            machineAccessMap.get(assetIdentifier) :
-            Collections.emptySet();
     }
 }
