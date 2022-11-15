@@ -25,7 +25,7 @@ public class AttackSurfaceServiceMetrics
     public ControllerEndpointMetrics fetchForEndpoint(String endpointName)
     {
         return
-            new ControllerEndpointMetrics(
+            new ControllerEndpointMetrics(endpointName,
                 getEndpointStatistic(endpointName, Statistic.COUNT),
                 getEndpointStatistic(endpointName, Statistic.TOTAL_TIME));
     }

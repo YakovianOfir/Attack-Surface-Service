@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 import static com.orca.spring.breacher.definitions.AttackSurfaceServiceConstants.RestControllerEndpointMappingAttack;
 import static com.orca.spring.breacher.definitions.AttackSurfaceServiceConstants.RestControllerEndpointMappingStats;
 
@@ -42,15 +44,18 @@ public class AttackSurfaceServiceStatistics
     private ServiceRuntimeStatistics tryFetch()
     {
         var virtualMachinesCount = Double.valueOf(serviceSettings.getCloudEnvironment().getVms().size());
-        log.info("Collected number of virtual machines in the environment ({})", virtualMachinesCount);
+        log.debug("Collected number of virtual machines in the environment -> ({})", virtualMachinesCount);
 
         var statsEndpointMetrics = serviceMetrics.fetchForEndpoint(RestControllerEndpointMappingStats);
-        log.info("Collected [/stats] endpoint metrics ({})", statsEndpointMetrics);
+        log.debug("Collected [/stats] endpoint metrics -> ({})", statsEndpointMetrics);
 
         var attackEndpointMetrics = serviceMetrics.fetchForEndpoint(RestControllerEndpointMappingAttack);
-        log.info("Collected [/attack] endpoint metrics ({})", attackEndpointMetrics);
+        log.debug("Collected [/attack] endpoint metrics -> ({})", attackEndpointMetrics);
 
-        return new ServiceRuntimeStatistics(virtualMachinesCount, statsEndpointMetrics, attackEndpointMetrics);
+        var serviceRuntimeStatistics = new ServiceRuntimeStatistics(virtualMachinesCount, Arrays.asList(statsEndpointMetrics, attackEndpointMetrics));
+        log.debug("Collected runtime endpoint statistics -> ({})", serviceRuntimeStatistics);
+
+        return serviceRuntimeStatistics;
     }
 }
 
