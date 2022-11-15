@@ -3,12 +3,10 @@ package com.orca.spring.breacher.controller;
 import com.orca.spring.breacher.exception.InternalRestEndpointException;
 import com.orca.spring.breacher.exception.VirtualMachineNotFoundException;
 import com.orca.spring.breacher.statistics.ServiceRuntimeStatistics;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,12 +19,13 @@ public class AttackSurfaceServiceController
 {
     // region Dependencies
 
+    @Getter
     @Autowired
     private AttackSurfaceServiceCoreEngine engine;
 
     // endregion
 
-    @RequestMapping(RestControllerEndpointMappingAttack)
+    @GetMapping(RestControllerEndpointMappingAttack)
     public List<String> analyzeMachineAttackSurface(@RequestParam(name = RestControllerEndpointAttackQueryParam) String machineIdentifier) throws VirtualMachineNotFoundException, InternalRestEndpointException
     {
         try
@@ -40,11 +39,11 @@ public class AttackSurfaceServiceController
                 throw e;
             }
 
-            throw new InternalRestEndpointException(String.format("REST endpoint (%s) exception.", RestControllerEndpointMappingAttack), e);
+            throw new InternalRestEndpointException(e, "REST endpoint (%s) error.", RestControllerEndpointMappingAttack);
         }
     }
 
-    @RequestMapping(RestControllerEndpointMappingStats)
+    @GetMapping(RestControllerEndpointMappingStats)
     public ServiceRuntimeStatistics fetchServiceRuntimeStatistics() throws InternalRestEndpointException
     {
         try
@@ -53,7 +52,7 @@ public class AttackSurfaceServiceController
         }
         catch (Exception e)
         {
-            throw new InternalRestEndpointException(String.format("REST endpoint (%s) exception.", RestControllerEndpointMappingStats), e);
+            throw new InternalRestEndpointException(e, "REST endpoint (%s) error.", RestControllerEndpointMappingStats);
         }
     }
 }

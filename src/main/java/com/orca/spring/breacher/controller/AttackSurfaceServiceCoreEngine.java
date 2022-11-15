@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,7 +28,10 @@ public class AttackSurfaceServiceCoreEngine
 
     public List<String> analyzeMachineAttackSurface(String machineIdentifier) throws VirtualMachineNotFoundException
     {
-        return assetsTopology.analyzeAttackSurface(new CloudAssetIdentifier(machineIdentifier));
+        var targetAsset = new CloudAssetIdentifier(machineIdentifier);
+        var attackSurface = assetsTopology.analyzeAttackSurface(targetAsset);
+
+        return attackSurface.stream().map(i -> i.id()).collect(Collectors.toList());
     }
 
     public ServiceRuntimeStatistics fetchServiceRuntimeStatistics()

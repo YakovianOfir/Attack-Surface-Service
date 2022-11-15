@@ -122,6 +122,13 @@
 				<artifactId>git-commit-id-maven-plugin</artifactId>
 				<version>${git-commit-id.version}</version>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<reuseForks>false</reuseForks>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

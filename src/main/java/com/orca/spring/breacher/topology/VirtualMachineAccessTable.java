@@ -6,6 +6,7 @@ import com.orca.spring.breacher.definitions.VirtualMachine;
 import com.orca.spring.breacher.exception.VirtualMachineNotFoundException;
 import com.orca.spring.breacher.model.Vm;
 import com.orca.spring.breacher.settings.AttackSurfaceServiceSettings;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class VirtualMachineAccessTable
 {
     // region Fields
 
+    @Getter
     private final Map<CloudAssetIdentifier, Set<VirtualMachine>> machineAccessMap = new HashMap<>();
 
     // endregion
@@ -48,7 +50,7 @@ public class VirtualMachineAccessTable
     {
         if (!machineAccessMap.containsKey(assetIdentifier))
         {
-            throw new VirtualMachineNotFoundException(String.format("Cannot found VM asset with ID -> (%s)", assetIdentifier));
+            throw new VirtualMachineNotFoundException(String.format("Cannot find VM asset with ID -> (%s)", assetIdentifier));
         }
     }
 

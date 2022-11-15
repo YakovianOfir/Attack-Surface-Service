@@ -20,11 +20,11 @@ public class CloudAssetsTopology
 
     // endregion
 
-    public List<String> analyzeAttackSurface(CloudAssetIdentifier targetAsset) throws VirtualMachineNotFoundException
+    public List<CloudAssetIdentifier> analyzeAttackSurface(CloudAssetIdentifier targetAsset) throws VirtualMachineNotFoundException
     {
         return
             machineAccessTable.getAttackSurfaceForCloudAsset(targetAsset).stream()
-            .map(vm -> vm.getIdentifier().id())
+            .map(vm -> vm.getIdentifier())
             .collect(Collectors.toList());
     }
 }
