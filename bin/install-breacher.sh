@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
  
 # Abort if not super user
 if [[ ! `whoami` = "root" ]]; then
@@ -29,13 +29,14 @@ fi
  trap cleanup EXIT
 
 # Navigate to installation folder of the project
+echo "Navigating to $SCRIPT_DIR/install"
 cd "$SCRIPT_DIR"/install
 
 # Download the Java Development Kit [version 17]
-sh ./install_jdk.sh 17 jdk-17_linux-x64_bin.tar.gz "$WORKING_DIR"
+./install_jdk.sh 17 jdk-17_linux-x64_bin.tar.gz "$WORKING_DIR"
 
 # Install the Java Development Kit [version 17]
-sh ./install_java.sh "$WORKING_DIR/jdk-17_linux-x64_bin.tar.gz"
+./install_java.sh "$WORKING_DIR/jdk-17_linux-x64_bin.tar.gz"
 
 # Affirm completion and exit
 echo "Breacher backing packages were successfully installed!"

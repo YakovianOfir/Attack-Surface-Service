@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
  
 # Abort if not super user
 if [[ ! `whoami` = "root" ]]; then
