@@ -29,10 +29,10 @@ fi
  trap cleanup EXIT
 
 # Download the Java Development Kit [version 17]
-./install/install_jdk.sh 17 jdk-17_linux-x64_bin.tar.gz "$WORKING_DIR"
+sh "$SCRIPT_DIR"/install/install_jdk.sh 17 jdk-17_linux-x64_bin.tar.gz "$WORKING_DIR"
 
 # Install the Java Development Kit [version 17]
-./install/install_java.sh "$WORKING_DIR/jdk-17_linux-x64_bin.tar.gz"
+sh "$SCRIPT_DIR"/install/install_java.sh "$WORKING_DIR/jdk-17_linux-x64_bin.tar.gz"
 
 # Affirm completion and exit
 echo "Breacher backing packages were successfully installed!"

@@ -7,13 +7,6 @@ if [[ ! `whoami` = "root" ]]; then
     exit 1
 fi
 
-# exit when any command fails
-set -e
- 
-# Make sure that all Ubuntu OS packages are up to date
-apt-get update
-apt-get upgrade
-
 # Download the JDK to the required destination folder
 wget https://download.oracle.com/java/"$1"/latest/"$2" -P "$3"
 
