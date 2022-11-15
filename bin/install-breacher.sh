@@ -28,16 +28,15 @@ fi
  # Register the cleanup function to be called on the EXIT signal
  trap cleanup EXIT
 
-# Navigate to installation folder of the project
-echo "Navigating to $SCRIPT_DIR/install"
-cd "$SCRIPT_DIR"/install
+ cd $SCRIPT_DIR/install/
+ ls
 
-# Download the Java Development Kit [version 17]
-./install_jdk.sh 17 jdk-17_linux-x64_bin.tar.gz "$WORKING_DIR"
+ # Download the Java Development Kit [version 17]
+ bash install_jdk.sh 17 jdk-17_linux-x64_bin.tar.gz "$WORKING_DIR"
 
-# Install the Java Development Kit [version 17]
-./install_java.sh "$WORKING_DIR/jdk-17_linux-x64_bin.tar.gz"
+ # Install the Java Development Kit [version 17]
+ bash install_java.sh "$WORKING_DIR/jdk-17_linux-x64_bin.tar.gz"
 
-# Affirm completion and exit
-echo "Breacher backing packages were successfully installed!"
-exit 0
+ # Affirm completion and exit
+ echo "Breacher backing packages were successfully installed!"
+ exit 0
