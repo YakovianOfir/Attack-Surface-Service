@@ -37,13 +37,13 @@ mvn clean install
 To execute the locally built artifact, navigate to the root of the project via command line and execute:
 
 ```bash
-mvn spring-boot:run -Dspring-boot.run.arguments="<absolute-path-to-cloud-environment-file>"
+mvn spring-boot:run -Dspring-boot.run.arguments="<absolute-path-to-cloud-environment-file.json>"
 ```
 
 To execute the published official artifact, download the RC package and execute:
 
 ```bash
-java -jar target/Breacher.jar <absolute-path-to-cloud-environment-file>
+java -jar target/Breacher.jar <absolute-path-to-cloud-environment-file.json>
 ```
 
 # Calling REST Endpoints

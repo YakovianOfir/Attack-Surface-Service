@@ -11,7 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -70,6 +73,14 @@ public class VirtualMachineAccessTable
             .collect(Collectors.toSet());
     }
 
+    private static void removeSelfVirtualMachineIfPresent(VirtualMachine cloudAsset, Set<VirtualMachine> accessibleVirtualMachines)
+    {
+        if (accessibleVirtualMachines.removeIf(vm -> vm.getIdentifier().equals(cloudAsset.getIdentifier())))
+        {
+            log.debug("VM ({}}) cannot attack itself, attack surface ignores that. ", cloudAsset);
+        }
+    }
+
     private void constructVirtualMachineAccessTable(FirewallAccessTable firewallAccessTable, List<VirtualMachine> virtualMachines)
     {
         for (var vm : virtualMachines)
@@ -86,11 +97,8 @@ public class VirtualMachineAccessTable
             log.info("\t Resolving accessible virtual machines for VM... [({})]", vm);
             var accessibleVirtualMachines = resolveVirtualMachinesWithAssetTags(virtualMachines, allowedSourceTags);
 
-            if (accessibleVirtualMachines.isEmpty())
-            {
-                log.info("\t No accessible virtual machines for VM [({})]. Skipping...", vm);
-                continue;
-            }
+            log.info("\t Ignoring self VM along attack surface calculations... [({})]", vm);
+            removeSelfVirtualMachineIfPresent(vm, accessibleVirtualMachines);
 
             log.info("\t Constructing VM Access Table entry... [({})]", vm);
             constructVirtualMachineAccessTableEntry(vm, accessibleVirtualMachines);
@@ -102,6 +110,11 @@ public class VirtualMachineAccessTable
         if (machineAccessMap.containsKey(vm.getIdentifier()))
         {
             throw new UnsupportedOperationException();
+        }
+
+        if (accessibleVirtualMachines.isEmpty())
+        {
+            log.debug("\t No accessible virtual machines for VM [({})]. ", vm);
         }
 
         machineAccessMap.put(vm.getIdentifier(), accessibleVirtualMachines);
