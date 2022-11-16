@@ -10,14 +10,13 @@ The Breacher service forms a backbone of the aforementioned business initiative.
 
 # Documentation
 
-See 'docs' directory for the key project details, including all the supporting documents created over the course of the project. In particular, it explains the architectural design concepts used to development Breacher.
+See 'docs' directory for the key project details, including all the supporting documents created over the course of the project. In particular, it explains the architectural design concepts used to develop Breacher.
 
 ![img_1.png](design.png)
 
 # Build & Distribute
 
-Breacher is based around the central concept of the Maven Build Lifecycle. What this means is that the process for building and distributing a particular Breacher artifact is clearly defined. 
-To ship a new artifact, install Java & Maven on Windows / Linux / Mac. 
+Breacher is based around the central concept of the Maven Build Lifecycle. That is, the process for building and distributing a particular Breacher artifact is clearly defined. To ship a new artifact, install [JDK 17](https://www.oracle.com/java/technologies/downloads/#java17) & [Apache Maven](https://maven.apache.org/install.html) on Windows / Linux / Mac. 
 
 The default lifecycle consists of the following phases:
 
@@ -36,27 +35,27 @@ sudo mvn clean install
 
 # Service Execution
 
-To execute the locally built artifact, navigate to the root of the project via command line and execute:
+To execute the locally built artifact, navigate to the root folder of the project and execute:
 
 ```bash
 sudo mvn spring-boot:run -Dspring-boot.run.arguments="<absolute-path-to-cloud-environment-file.json>"
 ```
 
-To execute the published official artifact, download the RC package and execute:
+To execute the published official artifact, download the **latest RC** (Release Candidate) artifact and execute:
 
 ```bash
-sudo java -jar target/breacher-1.1.0-RC.jar <absolute-path-to-cloud-environment-file.json>
+sudo java -jar target/breacher-<latest-version>-RC.jar <absolute-path-to-cloud-environment-file.json>
 ```
 
 # Calling REST Endpoints
 
-Using the /attack endpoint via CLI:
+Using the ***/attack*** endpoint via CLI:
 
 ```bash
 sudo curl http://localhost/api/v1/attack?vm_id=<Cloud-Asset-Identifier>
 ```
 
-Using the /stats endpoint via CLI:
+Using the ***/stats*** endpoint via CLI:
 
 ```bash
 sudo curl http://localhost/api/v1/stats
@@ -70,8 +69,8 @@ sudo curl http://localhost/actuator
 
 # Known Issues
 
-1. When using the Spring Actuator for metric collection, and following the guide of spring boot 2.2.6 - the “http.server.requests” will not be shown in the metrics list if no valid REST requests have happened so far.
-After making the first REST request, the HTTP metric becomes available. In our case, the /stats endpoint will become available after properly initiating an /attack request.
+1. When using the Spring Actuator for metrics collection, and following the guidelines of Spring Boot 2.2.6, the “http.server.requests” will not be shown in the metrics list if no valid REST requests have happened so far.
+After making the first REST request, HTTP metrics becomes available. In our case, the ***/stats*** endpoint will become available only after properly initiating an ***/attack*** request.
 
 
 2. To locate computing bottlenecks within Breacher, and determine whether it satisfies performance requirements (for instance, handling up to 1,000 concurrent requests) - the system should have been tested against heavy performance benchmarks. Due to time constraints, stress testing didn't take place.
