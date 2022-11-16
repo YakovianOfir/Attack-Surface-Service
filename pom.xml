@@ -11,7 +11,7 @@
 	</parent>
 
 	<name>Breacher</name>
-	<version>1.0.0-RC</version>
+	<version>1.1.0-RC</version>
 	<groupId>com.orca.spring</groupId>
 	<artifactId>breacher</artifactId>
 	<description>Attack-Surface-Service</description>

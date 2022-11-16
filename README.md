@@ -29,7 +29,7 @@ The default lifecycle consists of the following phases:
 Use the following command to cleanly build and install artifacts into your local repository:
 
 ```bash
-mvn clean install
+sudo mvn clean install
 ```
 
 # Service Execution
@@ -37,13 +37,13 @@ mvn clean install
 To execute the locally built artifact, navigate to the root of the project via command line and execute:
 
 ```bash
-mvn spring-boot:run -Dspring-boot.run.arguments="<absolute-path-to-cloud-environment-file.json>"
+sudo mvn spring-boot:run -Dspring-boot.run.arguments="<absolute-path-to-cloud-environment-file.json>"
 ```
 
 To execute the published official artifact, download the RC package and execute:
 
 ```bash
-java -jar target/breacher-1.0.0-RC.jar <absolute-path-to-cloud-environment-file.json>
+sudo java -jar target/breacher-1.0.0-RC.jar <absolute-path-to-cloud-environment-file.json>
 ```
 
 # Calling REST Endpoints
@@ -51,19 +51,19 @@ java -jar target/breacher-1.0.0-RC.jar <absolute-path-to-cloud-environment-file.
 Using the /attack endpoint via CLI:
 
 ```bash
-curl http://localhost/api/v1/attack?vm_id=<Cloud-Asset-Identifier>
+sudo curl http://localhost/api/v1/attack?vm_id=<Cloud-Asset-Identifier>
 ```
 
 Using the /stats endpoint via CLI:
 
 ```bash
-curl http://localhost/api/v1/stats
+sudo curl http://localhost/api/v1/stats
 ```
 
 Monitoring via Spring Actuator:
 
 ```bash
-curl http://localhost/actuator
+sudo curl http://localhost/actuator
 ```
 
 # Known Issues

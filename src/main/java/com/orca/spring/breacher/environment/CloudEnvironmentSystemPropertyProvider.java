@@ -23,7 +23,7 @@ public class CloudEnvironmentSystemPropertyProvider implements ICloudEnvironment
         if (systemPropertyValue == null)
         {
             log.error("[System-Property-Provider] Cannot find the System Property. ({})", systemPropertyName);
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Cannot load the Cloud Environment.");
         }
 
         log.debug("[System-Property-Provider] Deserializing the Cloud Environment document. ({})", systemPropertyValue);

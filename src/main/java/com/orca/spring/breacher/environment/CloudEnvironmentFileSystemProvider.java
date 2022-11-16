@@ -24,7 +24,7 @@ public class CloudEnvironmentFileSystemProvider implements ICloudEnvironmentProv
         if (!cloudEnvironmentInputFile.exists())
         {
             log.error("[File-System-Provider] Cannot find the Cloud Environment file. ({})", inputFilePath);
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.format("Cannot find the Cloud Environment file -> [%s]", inputFilePath));
         }
 
         log.debug("[File-System-Provider] Deserializing the Cloud Environment document. ({})", cloudEnvironmentInputFile);
