@@ -1,5 +1,7 @@
 # Abstract
 
+![Attack-Surface-Service-Specification.pdf](docs/Attack-Surface-Service-Specification.pdf)
+
 Orca Security delivers the industry-leading Cloud Security Platform that identifies, prioritizes, and remediates security risks and compliance issues across various cloud estates, spanning AWS, Azure, GCP and K8s.
 
 The Orca Platform connects to a given cloud environment and provides complete coverage across all cloud risks – spanning misconfigurations, vulnerabilities, identity, data security, and advanced threats. In that matter, a fundamental platform capability is to scan the tenant environment and identify the potential attack vectors risking their cloud assets (denoted as Attack Surfaces).
