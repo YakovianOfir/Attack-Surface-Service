@@ -30,16 +30,26 @@ public class AttackSurfaceServiceController
     {
         try
         {
-            return engine.analyzeMachineAttackSurface(machineIdentifier);
+            log.info("[Controller]: Analyzing attack surface for asset -> ({})", machineIdentifier);
+
+            var attackSurface =  engine.analyzeMachineAttackSurface(machineIdentifier);
+
+            log.info("[Controller]: Analyzed attack surface for asset ({}) -> ({})", machineIdentifier, attackSurface);
+
+            return attackSurface;
         }
         catch (Exception e)
         {
             if (e instanceof VirtualMachineNotFoundException)
             {
+                log.error("[Controller]: Invalid machine identifier was requested. ({})", machineIdentifier);
+
                 throw e;
             }
 
-            throw new InternalRestEndpointException(e, "REST endpoint (%s) error.", RestControllerEndpointMappingAttack);
+            log.error("[Controller]: Unexpected checked exception, handing to error handler. ({})", e);
+
+            throw new InternalRestEndpointException(e, "[Controller]: REST endpoint (%s) error.", RestControllerEndpointMappingAttack);
         }
     }
 
@@ -48,11 +58,19 @@ public class AttackSurfaceServiceController
     {
         try
         {
-            return engine.fetchServiceRuntimeStatistics();
+            log.info("[Controller]: Fetching service runtime statistics.");
+
+            var currentStatistics =  engine.fetchServiceRuntimeStatistics();
+
+            log.info("[Controller]: Fetched service runtime statistics -> ({})", currentStatistics);
+
+            return currentStatistics;
         }
         catch (Exception e)
         {
-            throw new InternalRestEndpointException(e, "REST endpoint (%s) error.", RestControllerEndpointMappingStats);
+            log.error("[Controller]: Unexpected checked exception, handing to error handler. ({})", e);
+
+            throw new InternalRestEndpointException(e, "[Controller]: REST endpoint (%s) error.", RestControllerEndpointMappingStats);
         }
     }
 }

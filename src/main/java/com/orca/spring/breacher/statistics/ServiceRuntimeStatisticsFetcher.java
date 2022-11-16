@@ -17,7 +17,7 @@ import static com.orca.spring.breacher.definitions.AttackSurfaceServiceConstants
 @Slf4j
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class AttackSurfaceServiceStatistics
+public class ServiceRuntimeStatisticsFetcher
 {
     // region Dependencies
 
@@ -33,10 +33,12 @@ public class AttackSurfaceServiceStatistics
     {
         try
         {
+            log.warn("Trying to communicate with Actuator for runtime HTTP metrics.");
             return tryFetch();
         }
         catch (NullPointerException e)
         {
+            log.warn("Actuator REST calls were not made. Fallback to an empty snapshot.");
             return ServiceRuntimeStatistics.empty;
         }
     }

@@ -17,13 +17,13 @@ public class CloudEnvironmentProviderFactory
         {
             case FileSystemProvider ->
             {
-                log.info("[Cloud-Environment-Provider] Creating a file-based provider. ({})", argument);
+                log.debug("[Cloud-Environment-Provider] Creating a file-based provider. ({})", argument);
                 return new CloudEnvironmentFileSystemProvider(argument, mapper);
             }
 
             case SystemPropertyProvider ->
             {
-                log.info("[Cloud-Environment-Provider] Creating a property-based provider. ({})", argument);
+                log.debug("[Cloud-Environment-Provider] Creating a property-based provider. ({})", argument);
                 return new CloudEnvironmentSystemPropertyProvider(argument, mapper);
             }
 

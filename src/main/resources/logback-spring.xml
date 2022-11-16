@@ -21,10 +21,9 @@
     </appender>
 
     <root level="INFO">
-        <!--springProfile name="!prod">
+        <springProfile name="!prod">
             <appender-ref ref="CONSOLE"/>
-        </springProfile-->
-        <appender-ref ref="CONSOLE"/>
+        </springProfile>
         <appender-ref ref="FILE" />
     </root>
 
