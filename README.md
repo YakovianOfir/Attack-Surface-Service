@@ -43,7 +43,7 @@ mvn spring-boot:run -Dspring-boot.run.arguments="<absolute-path-to-cloud-environ
 To execute the published official artifact, download the RC package and execute:
 
 ```bash
-java -jar target/Breacher.jar <absolute-path-to-cloud-environment-file.json>
+java -jar target/breacher-1.0.0-RC.jar <absolute-path-to-cloud-environment-file.json>
 ```
 
 # Calling REST Endpoints

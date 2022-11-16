@@ -3,7 +3,6 @@ package com.orca.spring.breacher.definitions;
 import com.orca.spring.breacher.environment.CloudEnvironmentTestSampleEngine;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,12 +17,6 @@ public abstract class AttackSurfaceServiceTestsSuiteBase
     private ApplicationContext applicationContext;
 
     // endregion
-
-    @BeforeAll
-    public static void testSuiteInitialization()
-    {
-        CloudEnvironmentTestSampleEngine.Instance.trace();
-    }
 
     @AfterAll
     public static void testSuiteTeardown()

@@ -27,21 +27,24 @@ public class CloudEnvironmentTestSampleEngine
 
     public void loadRandom()
     {
-        log.info("[Test-Sample-Engine]: Loading a random test.");
+        log.info("[Test-Sample-Engine]: Loading a random test sample.");
         CloudEnvironmentSystemProperty.set(sampleProvider.getRandom());
+        trace();
     }
 
     @SneakyThrows
     public void load(CloudEnvironment cloudEnvironment)
     {
-        log.info("[Test-Sample-Engine]: Loading custom cloud environment sample -> ({})", cloudEnvironment.toString());
+        log.info("[Test-Sample-Engine]: Loading a custom cloud environment sample -> ({})", cloudEnvironment.toString());
         CloudEnvironmentSystemProperty.set(new ObjectMapper().writeValueAsString(cloudEnvironment));
+        trace();
     }
 
     public void load(String sampleName)
     {
-        log.info("[Test-Sample-Engine]: Loading test sample -> ({})", sampleName);
+        log.info("[Test-Sample-Engine]: Loading a test sample -> ({})", sampleName);
         CloudEnvironmentSystemProperty.set(sampleProvider.get(sampleName));
+        trace();
     }
 
     public void unload()
@@ -50,7 +53,7 @@ public class CloudEnvironmentTestSampleEngine
         CloudEnvironmentSystemProperty.clear();
     }
 
-    public void trace()
+    private void trace()
     {
         var loadedSample = CloudEnvironmentSystemProperty.get();
         log.info("[Test-Sample-Engine]: Current test sample -> ({})", loadedSample);
