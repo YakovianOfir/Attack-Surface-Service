@@ -88,12 +88,6 @@ public class VirtualMachineAccessTable
             log.info("\t Resolving allowed traffic sources for VM... [({})]", vm);
             var allowedSourceTags = firewallAccessTable.resolveAllowedTrafficSourcesForVirtualMachine(vm);
 
-            if (allowedSourceTags.isEmpty())
-            {
-                log.info("\t No traffic sources are allowed for VM [({})]. Skipping...", vm);
-                continue;
-            }
-
             log.info("\t Resolving accessible virtual machines for VM... [({})]", vm);
             var accessibleVirtualMachines = resolveVirtualMachinesWithAssetTags(virtualMachines, allowedSourceTags);
 
